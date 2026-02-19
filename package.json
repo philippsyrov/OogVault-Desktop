@@ -18,14 +18,18 @@
     },
     "files": [
       "main.js",
-      "preload.js",
+      "preload.cjs",
       "renderer/**/*",
       "lib/**/*",
-      "assets/**/*"
+      "assets/**/*",
+      "!assets/screenshots/**"
     ]
   },
   "devDependencies": {
     "electron": "^34.0.0",
     "electron-builder": "^25.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0"
   }
 }

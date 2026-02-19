@@ -70,9 +70,16 @@ async function switchView(view) {
 /* ── Data Loading ── */
 
 async function loadConversations() {
-  allConversations = await getAllConversations();
-  renderConversationList(allConversations);
+  try {
+    allConversations = await getAllConversations();
+    renderConversationList(allConversations);
+  } catch (err) {
+    console.error('[OogVault] loadConversations failed:', err);
+    const listEl = document.getElementById('conversations-list');
+    if (listEl) listEl.innerHTML = `<div class="loading" style="color:#f87171;">Error loading conversations:<br><code>${err.message}</code><br><br>Try restarting the app.</div>`;
+  }
 }
+
 
 async function loadNuggets(query) {
   const hasQuery = query && query.trim().length > 0;
@@ -137,6 +144,7 @@ function bindGlobalEvents() {
     await loadConversations();
     await updateStats();
     if (activeView === 'knowledge') await loadNuggets();
+    window.electronAPI.notifyDataChanged();
   });
 
   // Triggered when user presses Cmd+Enter in Quick Search overlay

@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, dialog, shell, Tray, Menu, globalShortcut, nativeImage, screen } from 'electron';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -20,7 +20,7 @@ function createWindow() {
     titleBarStyle: 'hiddenInset',
     backgroundColor: '#1a1410',
     webPreferences: {
-      preload: join(__dirname, 'preload.js'),
+      preload: join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -32,6 +32,11 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
+  });
+
+  // Write initial vault snapshot once the page has loaded
+  mainWindow.webContents.on('did-finish-load', () => {
+    setTimeout(() => writeSnapshotFromWindow(mainWindow), 1000);
   });
 
   mainWindow.on('closed', () => {
@@ -54,6 +59,7 @@ function createQuickSearchWindow() {
   quickSearchWindow = new BrowserWindow({
     width: 620,
     height: 460,
+    type: 'panel',
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -61,7 +67,7 @@ function createQuickSearchWindow() {
     resizable: false,
     show: false,
     webPreferences: {
-      preload: join(__dirname, 'preload.js'),
+      preload: join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -233,3 +239,38 @@ ipcMain.handle('shell:openExternal', async (_event, url) => {
   }
   return true;
 });
+
+/* ── Vault Snapshot (for MCP server) ── */
+
+function getSnapshotPath() {
+  return join(app.getPath('userData'), 'vault-snapshot.json');
+}
+
+function writeSnapshotFromWindow(win) {
+  if (!win || win.isDestroyed()) return;
+
+  const code = `
+    (async () => {
+      const { getAllConversations, getAllMessages, getAllNuggets } = await import('../lib/db.js');
+      const conversations = await getAllConversations();
+      const messages = await getAllMessages();
+      const nuggets = await getAllNuggets();
+      return JSON.stringify({ conversations, messages, nuggets });
+    })()
+  `;
+
+  win.webContents.executeJavaScript(code).then((json) => {
+    const path = getSnapshotPath();
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, json, 'utf-8');
+  }).catch((err) => {
+    console.error('[OogVault] Snapshot write failed:', err.message);
+  });
+}
+
+// Renderer signals that data changed → main process pulls data and writes snapshot
+ipcMain.on('vault:dataChanged', () => {
+  writeSnapshotFromWindow(mainWindow);
+});
+
+ipcMain.handle('vault:getSnapshotPath', () => getSnapshotPath());

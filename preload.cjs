@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer, clipboard } from 'electron';
+const { contextBridge, ipcRenderer, clipboard } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // File dialogs
@@ -25,4 +25,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Quick search window: ask main process to hide the overlay
   hideQuickSearch: () => ipcRenderer.send('quick-search:hide'),
+
+  // Vault snapshot (signals main process to pull data and write snapshot)
+  notifyDataChanged: () => ipcRenderer.send('vault:dataChanged'),
 });

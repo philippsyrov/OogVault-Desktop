@@ -83,20 +83,19 @@ body {
   -webkit-app-region: no-drag;
 }
 
+.brand-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .brand-title {
   font-size: 17px;
   font-weight: 700;
   color: var(--text-1);
   letter-spacing: -0.4px;
-}
-
-.brand-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
-  flex-shrink: 0;
 }
 
 .sidebar-nav {

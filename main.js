@@ -46,7 +46,8 @@ app.on('window-all-closed', () => {
 /* ── IPC Handlers ── */
 
 ipcMain.handle('dialog:importJson', async () => {
-  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
+  mainWindow.focus();
+  const { canceled, filePaths } = await dialog.showOpenDialog({
     title: 'Import OogVault Export',
     filters: [{ name: 'JSON', extensions: ['json'] }],
     properties: ['openFile'],
@@ -64,7 +65,8 @@ ipcMain.handle('dialog:importJson', async () => {
 });
 
 ipcMain.handle('dialog:exportJson', async (_event, jsonString, defaultName) => {
-  const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+  mainWindow.focus();
+  const { canceled, filePath } = await dialog.showSaveDialog({
     title: 'Export OogVault Data',
     defaultPath: defaultName || 'oogvault-export.json',
     filters: [{ name: 'JSON', extensions: ['json'] }],
@@ -82,7 +84,8 @@ ipcMain.handle('dialog:exportJson', async (_event, jsonString, defaultName) => {
 });
 
 ipcMain.handle('dialog:exportMarkdown', async (_event, markdown, defaultName) => {
-  const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+  mainWindow.focus();
+  const { canceled, filePath } = await dialog.showSaveDialog({
     title: 'Export as Markdown',
     defaultPath: defaultName || 'oogvault-export.md',
     filters: [{ name: 'Markdown', extensions: ['md'] }],

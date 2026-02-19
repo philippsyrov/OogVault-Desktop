@@ -109,7 +109,13 @@ export function renderNuggets(nuggets, isSearch = false) {
       const markdown = await exportKnowledgeMarkdown(category);
       if (markdown) {
         const slug = category.toLowerCase().replace(/\s+/g, '-');
-        await window.electronAPI.exportMarkdown(markdown, `oogvault-knowledge-${slug}.md`);
+        const blob = new Blob([markdown], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `oogvault-knowledge-${slug}.md`;
+        a.click();
+        URL.revokeObjectURL(url);
         showToast(`${category} knowledge exported!`);
       } else {
         showToast('No knowledge to export in this category.');
@@ -121,8 +127,14 @@ export function renderNuggets(nuggets, isSearch = false) {
 export async function exportAllKnowledge() {
   const markdown = await exportKnowledgeMarkdown();
   if (markdown) {
-    const ok = await window.electronAPI.exportMarkdown(markdown, 'oogvault-knowledge.md');
-    if (ok) showToast('Knowledge exported as Markdown!');
+    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'oogvault-knowledge.md';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Knowledge exported as Markdown!');
   } else {
     showToast('No knowledge to export yet.');
   }

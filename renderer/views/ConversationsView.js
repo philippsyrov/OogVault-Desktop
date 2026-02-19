@@ -2,13 +2,7 @@
  * ConversationsView — two-panel layout: list on left, detail on right.
  */
 
-import {
-  getConversation,
-  deleteConversation,
-  addTag,
-  removeTag,
-  getTagsForConversation,
-} from '../../lib/db.js';
+import { getConversation, deleteConversation } from '../../lib/db.js';
 import { exportAsMarkdown } from '../../lib/search.js';
 import { escapeHtml, formatTime, groupByDate, showToast } from '../app.js';
 
@@ -123,7 +117,6 @@ export async function showDetail(id) {
   }
 
   const messages = conv.messages || [];
-  const tags = await getTagsForConversation(id);
 
   detailEl.innerHTML = `
     <div class="detail-pane-inner">
@@ -131,7 +124,15 @@ export async function showDetail(id) {
         <div class="detail-title">${escapeHtml(conv.title)}</div>
         <div class="detail-meta">${conv.platform || ''} · ${new Date(conv.created_at).toLocaleString()}</div>
       </div>
-      <div class="detail-actions-row" id="detail-actions-row">
+      <div class="detail-messages" id="detail-messages">
+        ${messages.map((m) => `
+          <div class="msg-bubble msg-bubble--${m.role}">
+            <span class="msg-role">${m.role === 'user' ? 'You' : 'Assistant'}</span>
+            <div class="msg-content">${escapeHtml(m.content.trim())}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="detail-bottom-bar">
         <button class="action-btn" id="btn-copy">
           <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Copy
@@ -145,54 +146,12 @@ export async function showDetail(id) {
           Delete
         </button>
       </div>
-      <div class="detail-messages" id="detail-messages">
-        ${messages.map((m) => `
-          <div class="msg-bubble msg-bubble--${m.role}">
-            <span class="msg-role">${m.role === 'user' ? 'You' : 'Assistant'}</span>
-            <div class="msg-content">${escapeHtml(m.content.trim())}</div>
-          </div>
-        `).join('')}
-      </div>
-      <div class="detail-tags-row" id="detail-tags-row"></div>
     </div>
   `;
 
-  renderTags(id, tags);
   bindDetailActions(id, conv, messages);
 }
 
-function renderTags(conversationId, tags) {
-  const tagsRow = document.getElementById('detail-tags-row');
-  if (!tagsRow) return;
-
-  let html = tags.map((tag) => `
-    <span class="tag">
-      ${escapeHtml(tag)}
-      <button class="tag-remove" data-tag="${escapeHtml(tag)}" title="Remove tag">&times;</button>
-    </span>
-  `).join('');
-
-  html += `<button class="tag-add-btn" id="btn-add-tag">+ Tag</button>`;
-  tagsRow.innerHTML = html;
-
-  tagsRow.querySelectorAll('.tag-remove').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      await removeTag(conversationId, btn.dataset.tag);
-      const updated = await getTagsForConversation(conversationId);
-      renderTags(conversationId, updated);
-    });
-  });
-
-  document.getElementById('btn-add-tag')?.addEventListener('click', () => {
-    const tag = prompt('Enter a tag:');
-    if (tag?.trim()) {
-      addTag(conversationId, tag.trim()).then(async () => {
-        const updated = await getTagsForConversation(conversationId);
-        renderTags(conversationId, updated);
-      });
-    }
-  });
-}
 
 function bindDetailActions(id, conv, messages) {
   document.getElementById('btn-copy')?.addEventListener('click', async () => {
@@ -207,7 +166,14 @@ function bindDetailActions(id, conv, messages) {
     const markdown = await exportAsMarkdown(id);
     if (markdown) {
       const slug = conv.title.substring(0, 40).replace(/[^a-z0-9]/gi, '-').toLowerCase();
-      await window.electronAPI.exportMarkdown(markdown, `oogvault-${slug}.md`);
+      const blob = new Blob([markdown], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `oogvault-${slug}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Exported as Markdown!');
     }
   });
 

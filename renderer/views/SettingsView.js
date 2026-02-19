@@ -31,6 +31,7 @@ export async function renderSettings() {
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           Import from Extension
         </button>
+        <input type="file" id="file-input-import" accept=".json" style="display:none;">
       </div>
       <div id="import-log" style="margin-top:12px; font-size:12px; color: var(--text-3); line-height:1.7;"></div>
     </div>
@@ -83,7 +84,17 @@ export async function renderSettings() {
 }
 
 function bindSettingsEvents() {
-  document.getElementById('btn-import')?.addEventListener('click', importFromExtension);
+  const fileInput = document.getElementById('file-input-import');
+
+  document.getElementById('btn-import')?.addEventListener('click', () => {
+    fileInput.value = '';
+    fileInput.click();
+  });
+
+  fileInput?.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (file) importFromFile(file);
+  });
   document.getElementById('btn-export-json')?.addEventListener('click', exportAllJson);
   document.getElementById('btn-clear-all')?.addEventListener('click', clearAllData);
 
@@ -94,23 +105,20 @@ function bindSettingsEvents() {
   });
 }
 
-async function importFromExtension() {
+async function importFromFile(file) {
   const logEl = document.getElementById('import-log');
-  logEl.textContent = 'Opening file picker…';
+  logEl.textContent = 'Reading file…';
 
-  const data = await window.electronAPI.importJson();
-
-  if (!data) {
-    logEl.textContent = 'Import cancelled.';
+  let data;
+  try {
+    const text = await file.text();
+    data = JSON.parse(text);
+  } catch (err) {
+    logEl.textContent = 'Error: could not read or parse file.';
     return;
   }
 
-  if (data.error) {
-    logEl.textContent = `Error: ${data.error}`;
-    return;
-  }
-
-  const conversations = data.conversations || [];
+  const conversations = data.conversations || (Array.isArray(data) ? data : []);
   const nuggets = data.nuggets || [];
 
   if (conversations.length === 0 && nuggets.length === 0) {
@@ -171,8 +179,15 @@ async function exportAllJson() {
   }
 
   const payload = JSON.stringify({ conversations, nuggets }, null, 2);
-  const ok = await window.electronAPI.exportJson(payload, 'oogvault-export.json');
-  if (ok) showToast('Exported!');
+  const filename = `oogvault-export-${new Date().toISOString().split('T')[0]}.json`;
+  const blob = new Blob([payload], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported!');
 }
 
 async function clearAllData() {

@@ -5,7 +5,7 @@
 
 import { getAllConversations, getStats, getAllNuggets } from '../lib/db.js';
 import { searchConversations, searchNuggetsText } from '../lib/search.js';
-import { renderConversationList, renderSearchResults } from './views/ConversationsView.js';
+import { renderConversationList, renderSearchResults, showDetail } from './views/ConversationsView.js';
 import { renderNuggets, exportAllKnowledge } from './views/KnowledgeView.js';
 import { renderSettings } from './views/SettingsView.js';
 
@@ -137,6 +137,13 @@ function bindGlobalEvents() {
     await loadConversations();
     await updateStats();
     if (activeView === 'knowledge') await loadNuggets();
+  });
+
+  // Triggered when user presses Cmd+Enter in Quick Search overlay
+  window.electronAPI.onNavigateToConversation(async (id) => {
+    await switchView('conversations');
+    // Give the list a tick to render, then select the conversation
+    setTimeout(() => showDetail(id), 50);
   });
 }
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
+  <title>OogVault Quick Search</title>
+  <link rel="stylesheet" href="quicksearch.css">
+</head>
+<body>
+  <div class="qs-container">
+
+    <div class="qs-input-row">
+      <svg class="qs-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        type="text"
+        id="qs-input"
+        class="qs-input"
+        placeholder="Search your vault…"
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <span class="qs-esc-hint">esc</span>
+    </div>
+
+    <div id="qs-results" class="qs-results"></div>
+
+    <div class="qs-footer">
+      <button id="qs-btn-copy" class="qs-footer-btn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        Copy <span class="qs-kbd">↵</span>
+      </button>
+      <button id="qs-btn-open" class="qs-footer-btn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        Open <span class="qs-kbd">⌘↵</span>
+      </button>
+      <button id="qs-btn-close" class="qs-footer-btn qs-footer-btn--close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Close <span class="qs-kbd">esc</span>
+      </button>
+    </div>
+
+  </div>
+
+  <script type="module" src="quicksearch.js"></script>
+</body>
+</html>

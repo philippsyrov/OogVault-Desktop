@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
+  <title>OogVault</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="brand-title">OogVault</span>
+        <span class="brand-dot"></span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item nav-item--active" data-view="conversations" id="nav-conversations">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Conversations
+        </button>
+        <button class="nav-item" data-view="knowledge" id="nav-knowledge">
+          <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Knowledge
+        </button>
+        <button class="nav-item" data-view="settings" id="nav-settings">
+          <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          Settings
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div id="sidebar-stats" class="sidebar-stats">Loading...</div>
+      </div>
+    </aside>
+
+    <!-- Main Panel -->
+    <main class="main-panel">
+
+      <!-- Conversations View -->
+      <div id="view-conversations" class="view view--active">
+
+        <!-- Toolbar -->
+        <div class="panel-toolbar">
+          <div class="search-bar">
+            <span class="search-icon">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input
+              type="text"
+              id="search-input"
+              class="search-input"
+              placeholder="Search conversations..."
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <span id="search-clear" class="search-clear" style="display:none;">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </span>
+          </div>
+        </div>
+
+        <!-- Two-panel layout -->
+        <div class="content-panes">
+
+          <!-- Left: conversation list -->
+          <div class="pane-list" id="pane-list">
+            <div id="conversations-list" class="conversations-list">
+              <div class="loading">Loading your vault...</div>
+            </div>
+          </div>
+
+          <!-- Right: conversation detail -->
+          <div class="pane-detail" id="pane-detail">
+            <div class="detail-placeholder">
+              <div class="placeholder-icon">
+                <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <div class="placeholder-text">Select a conversation</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Knowledge View -->
+      <div id="view-knowledge" class="view" style="display:none;">
+        <div class="panel-toolbar">
+          <div class="search-bar">
+            <span class="search-icon">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input
+              type="text"
+              id="knowledge-search-input"
+              class="search-input"
+              placeholder="Search knowledge nuggets..."
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </div>
+          <button id="btn-export-knowledge" class="toolbar-btn">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export All
+          </button>
+        </div>
+        <div id="nuggets-list" class="nuggets-list">
+          <div class="loading">Loading knowledge...</div>
+        </div>
+      </div>
+
+      <!-- Settings View -->
+      <div id="view-settings" class="view" style="display:none;">
+        <div class="settings-content" id="settings-content">
+          <div class="loading">Loading settings...</div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

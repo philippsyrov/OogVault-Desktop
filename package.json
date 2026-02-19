@@ -1,0 +1,31 @@
+{
+  "name": "oogvault-desktop",
+  "version": "0.1.0",
+  "description": "OogVault Desktop — local AI conversation search and knowledge base",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --mac",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.oogvault.desktop",
+    "productName": "OogVault",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.icns"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "lib/**/*",
+      "assets/**/*"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}

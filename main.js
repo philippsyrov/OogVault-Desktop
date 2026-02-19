@@ -105,3 +105,10 @@ ipcMain.handle('clipboard:writeText', async (_event, text) => {
   clipboard.writeText(text);
   return true;
 });
+
+ipcMain.handle('shell:openExternal', async (_event, url) => {
+  if (typeof url === 'string' && url.startsWith('https://')) {
+    await shell.openExternal(url);
+  }
+  return true;
+});

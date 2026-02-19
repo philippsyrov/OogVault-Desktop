@@ -90,9 +90,7 @@ function bindSettingsEvents() {
   // Open link in default browser via Electron shell
   document.getElementById('github-link')?.addEventListener('click', (e) => {
     e.preventDefault();
-    // electronAPI doesn't expose shell, but we can use a simple workaround
-    // The link click is handled; open in OS browser
-    window.open('https://github.com/PhilT3ch/OogVault');
+    window.electronAPI.openExternal('https://github.com/PhilT3ch/OogVault');
   });
 }
 

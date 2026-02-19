@@ -1,96 +1,97 @@
-# OogVault Desktop
+<h1 align="center">OogVault Desktop 🐢</h1>
 
-> Your AI conversation history — searchable, local, private.
+<p align="center">
+  <strong>"Yesterday is history, tomorrow's still a mystery, chats rest within the vault in secrecy."</strong>
+</p>
 
-A companion Electron desktop app for the [OogVault browser extension](https://github.com/PhilT3ch/OogVault). Import conversations from Claude, ChatGPT, and Gemini, then search and explore them — from a full-window UI, a Spotlight-style overlay, or directly inside Claude Desktop via MCP.
+<p align="center">
+  <a href="#-features"><img src="https://img.shields.io/badge/Status-Beta-gold?style=flat-square" alt="Status: Beta" /></a>
+  <a href="#-privacy"><img src="https://img.shields.io/badge/Privacy-100%25_Local-2d6a4f?style=flat-square" alt="100% Local" /></a>
+  <img src="https://img.shields.io/badge/Electron-34-47848f?style=flat-square" alt="Electron 34" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-d4a843?style=flat-square" alt="MIT License" /></a>
+</p>
 
-**100% local. No accounts. No cloud. No telemetry.**
-
----
-
-## Features at a glance
-
-### Main window — browse & search all your conversations
-
-A two-panel desktop UI for browsing, searching, and reading every AI conversation you've saved.
-
-![OogVault Desktop main window showing conversations list and detail view](assets/screenshots/desktop-tab.png)
-
-Full-text fuzzy search, conversation detail view with the full message thread, one-click copy or export as Markdown, and delete. Stats in the sidebar update live.
+<p align="center">
+  <em>A companion desktop app for the <a href="https://github.com/PhilT3ch/OogVault">OogVault browser extension</a>.<br/>
+  Browse, search, and ask Claude about every AI conversation you've ever saved — all local, all private.</em>
+</p>
 
 ---
 
-### Quick Search overlay — `Cmd+Shift+Space` from anywhere
+## The Problem
 
-A Spotlight-style search popup that searches your entire vault in real time, without opening the main window.
+The browser extension is great for capturing conversations while you're in the browser. But what about when you're not? What if you want to search your entire vault from anywhere on your Mac, or ask Claude to recall something you discussed three weeks ago?
 
-![Quick Search overlay showing donkey-themed search results](assets/screenshots/quick-search.png)
+## The Solution
 
-Press `Cmd+Shift+Space` from anywhere on your Mac. Start typing. Arrow keys to navigate, click a result to open the full conversation.
+**OogVault Desktop** brings your vault out of the browser and onto your desktop. A full-window UI to browse everything, a Spotlight-style overlay to search from anywhere with a hotkey, a knowledge base that auto-distills your conversations, and an MCP server so Claude Desktop can search your vault for you.
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| **Full-Window UI** | Two-panel layout — conversation list on the left, full message thread on the right |
+| **Quick Search Overlay** | Press `Cmd+Shift+Space` from anywhere on your Mac. Search your entire vault without opening the app |
+| **Menu Bar Icon** | Lives quietly in your menu bar. Always one click away |
+| **Knowledge Base** | Every conversation is automatically distilled into Q&A nuggets, auto-categorized by topic |
+| **MCP Integration** | Exposes your vault as an MCP server so Claude Desktop can search, recall, and reference your past conversations |
+| **Import from Extension** | One-click import via JSON export from the OogVault browser extension |
+| **Export** | Conversations as Markdown, full vault as JSON |
+
+---
+
+## 📸 Screenshots
+
+### Menu Bar & Quick Search — always one click or one hotkey away
+
+> OogVault lives in your menu bar. Click the icon for instant access, or press `Cmd+Shift+Space` from anywhere to launch the search overlay without opening the main window.
+
+<img src="assets/screenshots/desktop-tab.png" alt="OogVault menu bar icon and Quick Search overlay" width="720" />
+
+---
+
+### Quick Search in action
+
+> Type any keyword and results appear instantly. Arrow keys to navigate, `Enter` to open, `Esc` to dismiss. Works from any app, any window.
+
+<img src="assets/screenshots/quick-search.png" alt="Quick Search overlay showing a machine learning result" width="720" />
 
 ---
 
 ### Knowledge Base — your conversations, distilled
 
-Every conversation is automatically analysed and key Q&A pairs are extracted and categorised into topics (AI, Tech, Science, History, Finance, etc.).
+> Every imported conversation is automatically analysed. Key Q&A pairs are extracted and sorted into topics — AI, Tech, Science, History, Health, and more. Search across all nuggets, or export any category.
 
-![Knowledge tab showing categorised nuggets including a blockchain explanation](assets/screenshots/knowledge-tab.png)
-
-Each nugget shows the original question and the best answer from the conversation. Search across all nuggets. Export as CSV.
+<img src="assets/screenshots/knowledge-tab.png" alt="Knowledge tab showing categorised Q&A nuggets" width="720" />
 
 ---
 
-### Claude Desktop MCP Integration — ask Claude about your past conversations
+### MCP Integration — ask Claude about your past conversations
 
-OogVault exposes your vault as an [MCP server](https://modelcontextprotocol.io). Claude Desktop can search your conversation history, retrieve full exchanges, and find similar past questions — all without you lifting a finger.
+> OogVault exposes your vault as an [MCP server](https://modelcontextprotocol.io). Claude Desktop can search your conversation history, retrieve full exchanges, and find similar past questions — all from natural language.
 
-**Searching the vault from Claude Desktop:**
+<img src="assets/screenshots/claude-search.png" alt="Claude Desktop searching the OogVault vault for blockchain" width="720" />
 
-![Claude Desktop performing a vault search for blockchain](assets/screenshots/claude-search.png)
+<img src="assets/screenshots/claude-result.png" alt="Claude Desktop showing the full retrieved blockchain conversation" width="720" />
 
-**Getting the full answer back:**
-
-![Claude Desktop showing the full blockchain conversation result](assets/screenshots/claude-result.png)
-
-In the example above, a query for *"blockchain"* found the exact conversation where the user asked Claude to *"explain blockchain like I'm a medieval peasant who just discovered cheese"* — and Claude pulled up the full exchange, complete with its own editorial commentary (*"the Baron being powerless is peak blockchain energy"*).
+> In the example above, a simple *"Search my vault for blockchain"* found the exact conversation where the user asked Claude to explain blockchain like a medieval peasant who just discovered cheese — and pulled up the full answer on demand.
 
 ---
 
-## How it works
+## 🔒 Privacy
 
-```
-OogVault Extension (browser)
-        │
-        │  JSON export
-        ▼
-OogVault Desktop (Electron)
-  ├── IndexedDB  ◄──── all conversations & messages (local, private)
-  ├── Quick Search overlay  (Cmd+Shift+Space)
-  ├── Knowledge base  (auto-extracted Q&A nuggets)
-  └── vault-snapshot.json  ──► MCP Server ──► Claude Desktop
-```
+All data lives locally on your machine. Always.
 
-1. **Import** — export your conversations from the browser extension, import them into the desktop app in one click.
-2. **Browse & Search** — full-window two-panel UI with fuzzy keyword search.
-3. **Knowledge base** — conversations are parsed and nuggets (distilled Q&A pairs) are auto-extracted and categorised.
-4. **Quick Search** — global hotkey opens a lightweight overlay. Search, navigate with arrows, click to open.
-5. **MCP** — the app writes a `vault-snapshot.json` snapshot whenever data changes. The MCP server reads that file and exposes 5 tools to Claude Desktop. Works even when the desktop app is closed (uses the last snapshot).
+- **macOS:** `~/Library/Application Support/oogvault-desktop/`
+- **Windows:** `%APPDATA%\oogvault-desktop\`
+
+No network requests are ever made. No accounts, no sign-up, no telemetry. Zero.
 
 ---
 
-## MCP Tools (for Claude Desktop)
-
-| Tool | What it does |
-|---|---|
-| `search_conversations(query)` | Keyword + fuzzy search across all conversations |
-| `check_if_asked_before(question)` | Find similar questions you've asked in the past |
-| `get_conversation(id)` | Fetch the full conversation by ID |
-| `search_knowledge_nuggets(topic)` | Search extracted Q&A pairs by topic |
-| `list_recent_conversations(limit?)` | List most recent chats |
-
----
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -103,7 +104,7 @@ your-projects/
 └── OogVault-Desktop/      ← this repo
 ```
 
-> **Note on `lib/`:** The `lib/` folder is a copy of shared code from the extension (`db.js` + `search.js`). If it's missing, run `cp -r ../OogVault/lib ./lib` after cloning.
+> **Note on `lib/`:** The `lib/` folder is shared code from the extension (`db.js` + `search.js`). If it's missing after cloning, run `cp -r ../OogVault/lib ./lib`.
 
 ### Install & run
 
@@ -122,13 +123,21 @@ npm run dist
 
 ---
 
-## Claude Desktop Setup
+## 📥 Importing your conversations
+
+1. Open the OogVault browser extension → **Settings** (gear icon)
+2. Click **Export All** — saves a `.json` file
+3. In the desktop app → **Settings** → **Import from Extension** → pick the file
+
+---
+
+## 🤖 Claude Desktop MCP Setup
 
 1. Open the desktop app at least once — it writes the initial vault snapshot to disk.
 2. Find your Claude Desktop config file:
    - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
    - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-3. Add the OogVault server:
+3. Add the OogVault MCP server:
 
 ```json
 {
@@ -143,36 +152,52 @@ npm run dist
 4. Restart Claude Desktop.
 5. Try it: *"Search my vault for machine learning discussions"*
 
+### Available MCP Tools
+
+| Tool | What it does |
+|------|-------------|
+| `search_conversations(query)` | Keyword + fuzzy search across all conversations |
+| `check_if_asked_before(question)` | Find similar questions you've asked in the past |
+| `get_conversation(id)` | Fetch the full conversation by ID |
+| `search_knowledge_nuggets(topic)` | Search extracted Q&A pairs by topic |
+| `list_recent_conversations(limit?)` | List most recent conversations |
+
 ---
 
-## Importing your conversations
+## 🏗️ How it works
 
-1. Open the OogVault browser extension → **Settings** (gear icon)
-2. Click **Export All** → saves a `.json` file
-3. In the desktop app → **Settings** → **Import from Extension** → pick the file
+```
+OogVault Extension (browser)
+        │
+        │  JSON export
+        ▼
+OogVault Desktop (Electron)
+  ├── IndexedDB  ◄──── all conversations & messages (local, private)
+  ├── Quick Search overlay  (Cmd+Shift+Space, global hotkey)
+  ├── Knowledge base  (auto-extracted Q&A nuggets)
+  └── vault-snapshot.json  ──► MCP Server ──► Claude Desktop
+```
 
 ---
 
-## Project structure
+## 🏛️ Project Structure
 
 ```
 OogVault-Desktop/
 ├── main.js             # Electron main process — windows, tray, IPC, shortcuts
-├── preload.cjs         # contextBridge → window.electronAPI (CommonJS, required by Electron)
-├── lib/                # Shared code: db.js (IndexedDB) + search.js (fuzzy search)
+├── preload.cjs         # contextBridge → window.electronAPI
+├── lib/                # Shared code: db.js + search.js (from extension)
 ├── assets/
 │   ├── icon.png / icon.icns
 │   └── screenshots/
 ├── server/
 │   ├── mcp-server.js   # MCP server (stdio, reads vault-snapshot.json)
-│   └── start-mcp.sh    # Launch script for Claude Desktop config
+│   └── start-mcp.sh    # Launch script for Claude Desktop
 └── renderer/
-    ├── index.html          # Main app shell
-    ├── app.js              # Entry point, view routing, shared utils
-    ├── app.css             # Amber glass design system
-    ├── quicksearch.html    # Quick search overlay
-    ├── quicksearch.css
-    ├── quicksearch.js
+    ├── index.html
+    ├── app.js
+    ├── app.css
+    ├── quicksearch.html / .css / .js
     └── views/
         ├── ConversationsView.js
         ├── KnowledgeView.js
@@ -181,28 +206,48 @@ OogVault-Desktop/
 
 ---
 
-## Known Issues
+## 🛠️ Tech Stack
 
-### Quick Search footer buttons (Copy / Open) — macOS only
-
-The **Copy** and **Open** buttons in the overlay footer, along with `Enter` / `Cmd+Enter` keyboard shortcuts, do not reliably fire on macOS.
-
-**Why:** Frameless transparent Electron windows lose "key window" status when interactive elements are clicked. The `blur` event fires and hides the window before `mousedown` can complete.
-
-**Workaround:** Click a search result directly to open it in the main window. Use `Esc` to close.
+- **Electron 34** — cross-platform desktop shell
+- **Vanilla JavaScript** — no frameworks, no build step, no dependencies
+- **IndexedDB** — local persistent storage
+- **MCP (stdio)** — Claude Desktop integration via Model Context Protocol
 
 ---
 
-## Stack
+## ⚠️ Known Issues
 
-Vanilla JS + CSS + Electron. No UI frameworks, no build tools, no cloud.
+### Quick Search footer buttons — macOS only
+
+The **Copy** and **Open** buttons in the overlay, along with `Enter` / `Cmd+Enter` shortcuts, may not reliably fire on macOS. This is an Electron limitation — frameless transparent windows lose focus before `mousedown` can complete.
+
+**Workaround:** Click a result directly to open it in the main window. Use `Esc` to close.
 
 ---
 
-## Privacy
+## 🗺️ Roadmap
 
-All data lives locally on your machine:
-- **macOS:** `~/Library/Application Support/oogvault-desktop/`
-- **Windows:** `%APPDATA%\oogvault-desktop\`
+- [x] Full-window two-panel UI (browse + search)
+- [x] Quick Search overlay with global hotkey
+- [x] Menu bar icon
+- [x] Knowledge base with topic categorization
+- [x] MCP server for Claude Desktop integration
+- [x] Import from browser extension
+- [ ] Windows build & testing
+- [ ] Auto-sync with browser extension (no manual export needed)
 
-No network requests are ever made. No accounts required.
+---
+
+## 📄 License
+
+MIT — do whatever you want with it, just don't pretend you built it.
+
+---
+
+<p align="center">
+  <em>"There are no accidents."</em> — Master Oogway <em>(probably)</em>
+</p>
+
+<p align="center">
+  <strong>🐢 Search your vault first. Save the tokens.</strong>
+</p>

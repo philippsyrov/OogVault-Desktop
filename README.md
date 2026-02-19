@@ -10,6 +10,16 @@ A companion Electron desktop app for the [OogVault browser extension](https://gi
 
 ## Features at a glance
 
+### Main window — browse & search all your conversations
+
+A two-panel desktop UI for browsing, searching, and reading every AI conversation you've saved.
+
+![OogVault Desktop main window showing conversations list and detail view](assets/screenshots/desktop-tab.png)
+
+Full-text fuzzy search, conversation detail view with the full message thread, one-click copy or export as Markdown, and delete. Stats in the sidebar update live.
+
+---
+
 ### Quick Search overlay — `Cmd+Shift+Space` from anywhere
 
 A Spotlight-style search popup that searches your entire vault in real time, without opening the main window.

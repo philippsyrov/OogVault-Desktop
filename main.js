@@ -79,7 +79,7 @@ function createQuickSearchWindow() {
   // can fire before the window disappears.
   let blurTimer = null;
   quickSearchWindow.on('blur', () => {
-    blurTimer = setTimeout(() => { quickSearchWindow.hide(); }, 150);
+    blurTimer = setTimeout(() => { quickSearchWindow.hide(); }, 250);
   });
   quickSearchWindow.on('focus', () => {
     clearTimeout(blurTimer);
@@ -102,6 +102,8 @@ function showQuickSearch() {
     y + Math.floor(height / 3),
   );
 
+  // Start at idle height so the window doesn't flash at full size before resizing
+  quickSearchWindow.setSize(620, 240, false);
   quickSearchWindow.show();
   quickSearchWindow.focus();
   quickSearchWindow.webContents.send('quick-search:focus');
@@ -160,6 +162,13 @@ app.on('will-quit', () => {
 
 ipcMain.on('quick-search:hide', () => {
   if (quickSearchWindow) quickSearchWindow.hide();
+});
+
+ipcMain.on('quick-search:resize', (_event, height) => {
+  if (quickSearchWindow && !quickSearchWindow.isDestroyed()) {
+    const clamped = Math.max(160, Math.min(460, Math.round(height)));
+    quickSearchWindow.setSize(620, clamped, false);
+  }
 });
 
 ipcMain.on('open-conversation', (_event, id) => {

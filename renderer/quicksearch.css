@@ -20,7 +20,7 @@
 
 html, body {
   width: 620px;
-  height: 460px;
+  height: auto;
   background: transparent;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
@@ -29,7 +29,7 @@ html, body {
 
 .qs-container {
   width: 620px;
-  height: 460px;
+  /* Height is driven by content; main process resizes window to match */
   display: flex;
   flex-direction: column;
   background: var(--bg);
@@ -89,6 +89,8 @@ html, body {
 .qs-results {
   flex: 1;
   overflow-y: auto;
+  /* Cap visible results so the window never grows past ~5 items before scrolling */
+  max-height: 365px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.12) transparent;
 }

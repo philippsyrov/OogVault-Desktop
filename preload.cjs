@@ -26,6 +26,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Quick search window: ask main process to hide the overlay
   hideQuickSearch: () => ipcRenderer.send('quick-search:hide'),
 
+  // Quick search window: resize to fit current content
+  resizeQuickSearch: (height) => ipcRenderer.send('quick-search:resize', height),
+
   // Vault snapshot (signals main process to pull data and write snapshot)
   notifyDataChanged: () => ipcRenderer.send('vault:dataChanged'),
 });

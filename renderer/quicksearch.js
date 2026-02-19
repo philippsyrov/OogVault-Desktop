@@ -58,13 +58,22 @@ window.electronAPI.onQuickSearchFocus(() => {
   input.value = '';
   results = [];
   selectedIndex = 0;
-  renderEmpty('');
+  renderEmpty('');        // also calls resizeToContent()
   updateFooterButtons();
   setTimeout(() => { input.focus(); }, 30);
 });
 
 renderEmpty('');
 updateFooterButtons();
+
+/* ── Resize window to fit content ── */
+
+function resizeToContent() {
+  requestAnimationFrame(() => {
+    const h = document.querySelector('.qs-container')?.offsetHeight;
+    if (h > 0) window.electronAPI.resizeQuickSearch(Math.round(h));
+  });
+}
 
 /* ── Search ── */
 
@@ -181,6 +190,8 @@ function render() {
       openInMain(result);
     });
   });
+
+  resizeToContent();
 }
 
 function renderSelection() {
@@ -209,10 +220,12 @@ function renderEmpty(mode) {
         Start typing to search your vault
       </div>`;
   }
+  resizeToContent();
 }
 
 function renderError() {
   resultsEl.innerHTML = `<div class="qs-empty">Something went wrong — try again</div>`;
+  resizeToContent();
 }
 
 function updateFooterButtons() {

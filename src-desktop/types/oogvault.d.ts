@@ -15,8 +15,6 @@ interface VaultConversation {
   is_auto_saved?: number;
   url?: string;
   messages?: VaultMessage[];
-  matchedContent?: string;
-  score?: number;
 }
 
 interface VaultNugget {

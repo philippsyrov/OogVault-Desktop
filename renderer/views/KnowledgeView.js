@@ -1,5 +1,5 @@
 import { exportKnowledgeMarkdown } from '../../lib/search.js';
-import { escapeHtml, formatTime, showToast } from '../app.js';
+import { escapeHtml, formatTime, showToast } from '../utils.js';
 export function renderNuggets(nuggets, isSearch = false) {
     const listElement = document.getElementById('nuggets-list');
     if (!listElement) {

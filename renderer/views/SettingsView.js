@@ -1,13 +1,6 @@
 import { deleteConversation, getAllConversations, getAllNuggets, getStats, saveConversation, saveNuggets, } from '../../lib/db.js';
 import { extractNuggets } from '../../lib/search.js';
-import { showToast } from '../app.js';
-function mustElement(id) {
-    const element = document.getElementById(id);
-    if (!element) {
-        throw new Error(`Missing required element: ${id}`);
-    }
-    return element;
-}
+import { mustElement, showToast } from '../utils.js';
 export async function renderSettings() {
     const settingsElement = mustElement('settings-content');
     const stats = await getStats();
@@ -25,9 +18,9 @@ export async function renderSettings() {
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           Import from Extension
         </button>
-        <input type="file" id="file-input-import" accept=".json" style="display:none;">
+        <input type="file" id="file-input-import" accept=".json" class="hidden">
       </div>
-      <div id="import-log" style="margin-top:12px; font-size:12px; color: var(--text-3); line-height:1.7;"></div>
+      <div id="import-log"></div>
     </div>
 
     <div class="glass-card">

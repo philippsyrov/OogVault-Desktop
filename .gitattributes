@@ -1,0 +1,7 @@
+# Compiled JS output — source of truth is TypeScript in src-desktop/
+main.js linguist-generated
+server/mcp-server.js linguist-generated
+renderer/app.js linguist-generated
+renderer/quicksearch.js linguist-generated
+renderer/utils.js linguist-generated
+renderer/views/*.js linguist-generated

@@ -1,14 +1,8 @@
 import { searchConversations } from '../lib/search.js';
+import { escapeHtml, formatTime, mustElement } from './utils.js';
 let results = [];
 let selectedIndex = 0;
 let searchTimer = null;
-function mustElement(id) {
-    const element = document.getElementById(id);
-    if (!element) {
-        throw new Error(`Missing required element: ${id}`);
-    }
-    return element;
-}
 const input = mustElement('qs-input');
 const resultsElement = mustElement('qs-results');
 const btnCopy = mustElement('qs-btn-copy');
@@ -153,7 +147,7 @@ function render() {
         <div class="qs-result-preview">${escapeHtml(result.matchedContent || '')}</div>
         <div class="qs-result-meta">
           <span class="qs-platform-badge">${escapeHtml(result.platform || '')}</span>
-          <span class="qs-date">${relativeDate(result.created_at || result.updated_at)}</span>
+          <span class="qs-date">${formatTime(result.created_at || result.updated_at)}</span>
         </div>
       </div>
     `)
@@ -244,24 +238,4 @@ function formatForClipboard(result) {
         lines.push('');
     }
     return lines.join('\n');
-}
-function relativeDate(timestamp) {
-    if (!timestamp) {
-        return '';
-    }
-    const diff = Date.now() - new Date(timestamp).getTime();
-    if (diff < 60_000)
-        return 'just now';
-    if (diff < 3_600_000)
-        return `${Math.floor(diff / 60_000)}m ago`;
-    if (diff < 86_400_000)
-        return `${Math.floor(diff / 3_600_000)}h ago`;
-    if (diff < 604_800_000)
-        return `${Math.floor(diff / 86_400_000)}d ago`;
-    return new Date(timestamp).toLocaleDateString();
-}
-function escapeHtml(value) {
-    const element = document.createElement('span');
-    element.textContent = value;
-    return element.innerHTML;
 }

@@ -1,6 +1,6 @@
 import { deleteConversation, getConversation } from '../../lib/db.js';
 import { exportAsMarkdown } from '../../lib/search.js';
-import { escapeHtml, formatTime, groupByDate, showToast } from '../app.js';
+import { escapeHtml, formatTime, groupByDate, showToast } from '../utils.js';
 let selectedId = null;
 export function renderConversationList(conversations) {
     const listElement = document.getElementById('conversations-list');

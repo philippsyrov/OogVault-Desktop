@@ -1,34 +1,16 @@
-const { contextBridge, ipcRenderer, clipboard } = require('electron');
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const { clipboard, contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
-  // File dialogs
-  importJson: () => ipcRenderer.invoke('dialog:importJson'),
-  exportJson: (jsonString, defaultName) =>
-    ipcRenderer.invoke('dialog:exportJson', jsonString, defaultName),
-  exportMarkdown: (markdown, defaultName) =>
-    ipcRenderer.invoke('dialog:exportMarkdown', markdown, defaultName),
-
-  // Clipboard (synchronous — no IPC round-trip needed)
-  copyToClipboard: (text) => clipboard.writeText(text),
-  openExternal: (url) => ipcRenderer.invoke('shell:openExternal', url),
-
-  // Quick search → main window navigation
-  openConversation: (id) => ipcRenderer.send('open-conversation', id),
-
-  // Main window: receive navigation requests from quick search
-  onNavigateToConversation: (callback) =>
-    ipcRenderer.on('navigate-to-conversation', (_e, id) => callback(id)),
-
-  // Quick search window: receive focus signal to clear + focus input
-  onQuickSearchFocus: (callback) =>
-    ipcRenderer.on('quick-search:focus', () => callback()),
-
-  // Quick search window: ask main process to hide the overlay
-  hideQuickSearch: () => ipcRenderer.send('quick-search:hide'),
-
-  // Quick search window: resize to fit current content
-  resizeQuickSearch: (height) => ipcRenderer.send('quick-search:resize', height),
-
-  // Vault snapshot (signals main process to pull data and write snapshot)
-  notifyDataChanged: () => ipcRenderer.send('vault:dataChanged'),
+    importJson: () => ipcRenderer.invoke('dialog:importJson'),
+    exportJson: (jsonString, defaultName) => ipcRenderer.invoke('dialog:exportJson', jsonString, defaultName),
+    exportMarkdown: (markdown, defaultName) => ipcRenderer.invoke('dialog:exportMarkdown', markdown, defaultName),
+    copyToClipboard: (text) => clipboard.writeText(text),
+    openExternal: (url) => ipcRenderer.invoke('shell:openExternal', url),
+    openConversation: (id) => ipcRenderer.send('open-conversation', id),
+    onNavigateToConversation: (callback) => ipcRenderer.on('navigate-to-conversation', (_event, id) => callback(id)),
+    onQuickSearchFocus: (callback) => ipcRenderer.on('quick-search:focus', () => callback()),
+    hideQuickSearch: () => ipcRenderer.send('quick-search:hide'),
+    resizeQuickSearch: (height) => ipcRenderer.send('quick-search:resize', height),
+    notifyDataChanged: () => ipcRenderer.send('vault:dataChanged'),
 });

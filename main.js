@@ -1,264 +1,234 @@
-import { app, BrowserWindow, ipcMain, dialog, shell, Tray, Menu, globalShortcut, nativeImage, screen } from 'electron';
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { join, dirname } from 'path';
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, nativeImage, screen, shell, Tray, } from 'electron';
+import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
 let mainWindow = null;
 let tray = null;
 let quickSearchWindow = null;
-
-/* ── Main Window ── */
-
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 750,
-    minWidth: 760,
-    minHeight: 520,
-    titleBarStyle: 'hiddenInset',
-    backgroundColor: '#1a1410',
-    webPreferences: {
-      preload: join(__dirname, 'preload.cjs'),
-      contextIsolation: true,
-      nodeIntegration: false,
-    },
-    icon: join(__dirname, 'assets', 'icon.png'),
-    show: false,
-  });
-
-  mainWindow.loadFile(join(__dirname, 'renderer', 'index.html'));
-
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-  });
-
-  // Write initial vault snapshot once the page has loaded
-  mainWindow.webContents.on('did-finish-load', () => {
-    setTimeout(() => writeSnapshotFromWindow(mainWindow), 1000);
-  });
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+function getErrorMessage(error) {
+    return error instanceof Error ? error.message : String(error);
 }
-
+function createWindow() {
+    mainWindow = new BrowserWindow({
+        width: 1100,
+        height: 750,
+        minWidth: 760,
+        minHeight: 520,
+        titleBarStyle: 'hiddenInset',
+        backgroundColor: '#1a1410',
+        webPreferences: {
+            preload: join(__dirname, 'preload.cjs'),
+            contextIsolation: true,
+            nodeIntegration: false,
+        },
+        icon: join(__dirname, 'assets', 'icon.png'),
+        show: false,
+    });
+    mainWindow.loadFile(join(__dirname, 'renderer', 'index.html'));
+    mainWindow.once('ready-to-show', () => {
+        mainWindow?.show();
+    });
+    mainWindow.webContents.on('did-finish-load', () => {
+        setTimeout(() => writeSnapshotFromWindow(mainWindow), 1000);
+    });
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
+}
 function showMainWindow() {
-  if (!mainWindow) {
-    createWindow();
-  } else {
+    if (!mainWindow) {
+        createWindow();
+        return;
+    }
     mainWindow.show();
     mainWindow.focus();
-  }
 }
-
-/* ── Quick Search Window ── */
-
 function createQuickSearchWindow() {
-  quickSearchWindow = new BrowserWindow({
-    width: 620,
-    height: 460,
-    type: 'panel',
-    frame: false,
-    transparent: true,
-    alwaysOnTop: true,
-    skipTaskbar: true,
-    resizable: false,
-    show: false,
-    webPreferences: {
-      preload: join(__dirname, 'preload.cjs'),
-      contextIsolation: true,
-      nodeIntegration: false,
-    },
-  });
-
-  quickSearchWindow.loadFile(join(__dirname, 'renderer', 'quicksearch.html'));
-
-  // Delay the blur-to-hide slightly so that click events on footer buttons
-  // can fire before the window disappears.
-  let blurTimer = null;
-  quickSearchWindow.on('blur', () => {
-    blurTimer = setTimeout(() => { quickSearchWindow.hide(); }, 250);
-  });
-  quickSearchWindow.on('focus', () => {
-    clearTimeout(blurTimer);
-  });
-
-  quickSearchWindow.on('closed', () => {
-    quickSearchWindow = null;
-  });
+    quickSearchWindow = new BrowserWindow({
+        width: 620,
+        height: 460,
+        type: 'panel',
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        resizable: false,
+        show: false,
+        webPreferences: {
+            preload: join(__dirname, 'preload.cjs'),
+            contextIsolation: true,
+            nodeIntegration: false,
+        },
+    });
+    quickSearchWindow.loadFile(join(__dirname, 'renderer', 'quicksearch.html'));
+    let blurTimer = null;
+    quickSearchWindow.on('blur', () => {
+        blurTimer = setTimeout(() => {
+            quickSearchWindow?.hide();
+        }, 250);
+    });
+    quickSearchWindow.on('focus', () => {
+        if (blurTimer) {
+            clearTimeout(blurTimer);
+            blurTimer = null;
+        }
+    });
+    quickSearchWindow.on('closed', () => {
+        quickSearchWindow = null;
+    });
 }
-
 function showQuickSearch() {
-  if (!quickSearchWindow) createQuickSearchWindow();
-
-  const cursor = screen.getCursorScreenPoint();
-  const display = screen.getDisplayNearestPoint(cursor);
-  const { x, y, width, height } = display.workArea;
-
-  quickSearchWindow.setPosition(
-    x + Math.floor((width - 620) / 2),
-    y + Math.floor(height / 3),
-  );
-
-  // Start at idle height so the window doesn't flash at full size before resizing
-  quickSearchWindow.setSize(620, 240, false);
-  quickSearchWindow.show();
-  quickSearchWindow.focus();
-  quickSearchWindow.webContents.send('quick-search:focus');
+    if (!quickSearchWindow) {
+        createQuickSearchWindow();
+    }
+    if (!quickSearchWindow) {
+        return;
+    }
+    const cursor = screen.getCursorScreenPoint();
+    const display = screen.getDisplayNearestPoint(cursor);
+    const { x, y, width, height } = display.workArea;
+    quickSearchWindow.setPosition(x + Math.floor((width - 620) / 2), y + Math.floor(height / 3));
+    quickSearchWindow.setSize(620, 240, false);
+    quickSearchWindow.show();
+    quickSearchWindow.focus();
+    quickSearchWindow.webContents.send('quick-search:focus');
 }
-
-/* ── Tray ── */
-
 function createTray() {
-  const icon = nativeImage
-    .createFromPath(join(__dirname, 'assets', 'icon.png'))
-    .resize({ width: 16, height: 16 });
-  icon.setTemplateImage(true);
-
-  tray = new Tray(icon);
-  tray.setToolTip('OogVault — Quick Search (⌘⇧Space)');
-
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Quick Search',
-      accelerator: 'CmdOrCtrl+Shift+Space',
-      click: showQuickSearch,
-    },
-    {
-      label: 'Open OogVault',
-      click: showMainWindow,
-    },
-    { type: 'separator' },
-    { label: 'Quit OogVault', role: 'quit' },
-  ]);
-
-  tray.setContextMenu(contextMenu);
-  tray.on('click', showQuickSearch);
+    const icon = nativeImage
+        .createFromPath(join(__dirname, 'assets', 'icon.png'))
+        .resize({ width: 16, height: 16 });
+    icon.setTemplateImage(true);
+    tray = new Tray(icon);
+    tray.setToolTip('OogVault — Quick Search (⌘⇧Space)');
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: 'Quick Search',
+            accelerator: 'CmdOrCtrl+Shift+Space',
+            click: showQuickSearch,
+        },
+        {
+            label: 'Open OogVault',
+            click: showMainWindow,
+        },
+        { type: 'separator' },
+        { label: 'Quit OogVault', role: 'quit' },
+    ]);
+    tray.setContextMenu(contextMenu);
+    tray.on('click', showQuickSearch);
 }
-
-/* ── App lifecycle ── */
-
 app.whenReady().then(() => {
-  createWindow();
-  createTray();
-
-  globalShortcut.register('CmdOrCtrl+Shift+Space', showQuickSearch);
-
-  app.on('activate', showMainWindow);
+    createWindow();
+    createTray();
+    globalShortcut.register('CmdOrCtrl+Shift+Space', showQuickSearch);
+    app.on('activate', showMainWindow);
 });
-
 app.on('window-all-closed', () => {
-  // Keep running in tray on macOS; quit on other platforms
-  if (process.platform !== 'darwin') app.quit();
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
-
 app.on('will-quit', () => {
-  globalShortcut.unregisterAll();
+    globalShortcut.unregisterAll();
 });
-
-/* ── IPC Handlers ── */
-
 ipcMain.on('quick-search:hide', () => {
-  if (quickSearchWindow) quickSearchWindow.hide();
+    quickSearchWindow?.hide();
 });
-
 ipcMain.on('quick-search:resize', (_event, height) => {
-  if (quickSearchWindow && !quickSearchWindow.isDestroyed()) {
+    if (!quickSearchWindow || quickSearchWindow.isDestroyed() || typeof height !== 'number') {
+        return;
+    }
     const clamped = Math.max(160, Math.min(460, Math.round(height)));
     quickSearchWindow.setSize(620, clamped, false);
-  }
 });
-
 ipcMain.on('open-conversation', (_event, id) => {
-  showMainWindow();
-  // Wait for the window to be ready before sending navigation event
-  if (mainWindow.isVisible()) {
-    mainWindow.webContents.send('navigate-to-conversation', id);
-  } else {
+    if (typeof id !== 'string') {
+        return;
+    }
+    showMainWindow();
+    if (!mainWindow) {
+        return;
+    }
+    if (mainWindow.isVisible()) {
+        mainWindow.webContents.send('navigate-to-conversation', id);
+        return;
+    }
     mainWindow.once('ready-to-show', () => {
-      mainWindow.webContents.send('navigate-to-conversation', id);
+        mainWindow?.webContents.send('navigate-to-conversation', id);
     });
-  }
 });
-
 ipcMain.handle('dialog:importJson', async () => {
-  mainWindow.focus();
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    title: 'Import OogVault Export',
-    filters: [{ name: 'JSON', extensions: ['json'] }],
-    properties: ['openFile'],
-  });
-
-  if (canceled || filePaths.length === 0) return null;
-
-  try {
-    const raw = readFileSync(filePaths[0], 'utf-8');
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error('[OogVault] Import failed:', err);
-    return { error: 'Could not read or parse file.' };
-  }
+    mainWindow?.focus();
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+        title: 'Import OogVault Export',
+        filters: [{ name: 'JSON', extensions: ['json'] }],
+        properties: ['openFile'],
+    });
+    if (canceled || filePaths.length === 0) {
+        return null;
+    }
+    try {
+        const raw = readFileSync(filePaths[0], 'utf-8');
+        return JSON.parse(raw);
+    }
+    catch (error) {
+        console.error('[OogVault] Import failed:', error);
+        return { error: 'Could not read or parse file.' };
+    }
 });
-
 ipcMain.handle('dialog:exportJson', async (_event, jsonString, defaultName) => {
-  mainWindow.focus();
-  const { canceled, filePath } = await dialog.showSaveDialog({
-    title: 'Export OogVault Data',
-    defaultPath: defaultName || 'oogvault-export.json',
-    filters: [{ name: 'JSON', extensions: ['json'] }],
-  });
-
-  if (canceled || !filePath) return false;
-
-  try {
-    writeFileSync(filePath, jsonString, 'utf-8');
-    return true;
-  } catch (err) {
-    console.error('[OogVault] Export JSON failed:', err);
-    return false;
-  }
+    mainWindow?.focus();
+    const { canceled, filePath } = await dialog.showSaveDialog({
+        title: 'Export OogVault Data',
+        defaultPath: defaultName || 'oogvault-export.json',
+        filters: [{ name: 'JSON', extensions: ['json'] }],
+    });
+    if (canceled || !filePath) {
+        return false;
+    }
+    try {
+        writeFileSync(filePath, jsonString, 'utf-8');
+        return true;
+    }
+    catch (error) {
+        console.error('[OogVault] Export JSON failed:', error);
+        return false;
+    }
 });
-
 ipcMain.handle('dialog:exportMarkdown', async (_event, markdown, defaultName) => {
-  mainWindow.focus();
-  const { canceled, filePath } = await dialog.showSaveDialog({
-    title: 'Export as Markdown',
-    defaultPath: defaultName || 'oogvault-export.md',
-    filters: [{ name: 'Markdown', extensions: ['md'] }],
-  });
-
-  if (canceled || !filePath) return false;
-
-  try {
-    writeFileSync(filePath, markdown, 'utf-8');
-    shell.openPath(filePath);
-    return true;
-  } catch (err) {
-    console.error('[OogVault] Export Markdown failed:', err);
-    return false;
-  }
+    mainWindow?.focus();
+    const { canceled, filePath } = await dialog.showSaveDialog({
+        title: 'Export as Markdown',
+        defaultPath: defaultName || 'oogvault-export.md',
+        filters: [{ name: 'Markdown', extensions: ['md'] }],
+    });
+    if (canceled || !filePath) {
+        return false;
+    }
+    try {
+        writeFileSync(filePath, markdown, 'utf-8');
+        await shell.openPath(filePath);
+        return true;
+    }
+    catch (error) {
+        console.error('[OogVault] Export Markdown failed:', error);
+        return false;
+    }
 });
-
-
 ipcMain.handle('shell:openExternal', async (_event, url) => {
-  if (typeof url === 'string' && url.startsWith('https://')) {
-    await shell.openExternal(url);
-  }
-  return true;
+    if (typeof url === 'string' && url.startsWith('https://')) {
+        await shell.openExternal(url);
+    }
+    return true;
 });
-
-/* ── Vault Snapshot (for MCP server) ── */
-
 function getSnapshotPath() {
-  return join(app.getPath('userData'), 'vault-snapshot.json');
+    return join(app.getPath('userData'), 'vault-snapshot.json');
 }
-
 function writeSnapshotFromWindow(win) {
-  if (!win || win.isDestroyed()) return;
-
-  const code = `
+    if (!win || win.isDestroyed()) {
+        return;
+    }
+    const code = `
     (async () => {
       const { getAllConversations, getAllMessages, getAllNuggets } = await import('../lib/db.js');
       const conversations = await getAllConversations();
@@ -267,19 +237,18 @@ function writeSnapshotFromWindow(win) {
       return JSON.stringify({ conversations, messages, nuggets });
     })()
   `;
-
-  win.webContents.executeJavaScript(code).then((json) => {
-    const path = getSnapshotPath();
-    mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, json, 'utf-8');
-  }).catch((err) => {
-    console.error('[OogVault] Snapshot write failed:', err.message);
-  });
+    win.webContents
+        .executeJavaScript(code)
+        .then((json) => {
+        const snapshotPath = getSnapshotPath();
+        mkdirSync(dirname(snapshotPath), { recursive: true });
+        writeFileSync(snapshotPath, String(json), 'utf-8');
+    })
+        .catch((error) => {
+        console.error('[OogVault] Snapshot write failed:', getErrorMessage(error));
+    });
 }
-
-// Renderer signals that data changed → main process pulls data and writes snapshot
 ipcMain.on('vault:dataChanged', () => {
-  writeSnapshotFromWindow(mainWindow);
+    writeSnapshotFromWindow(mainWindow);
 });
-
 ipcMain.handle('vault:getSnapshotPath', () => getSnapshotPath());

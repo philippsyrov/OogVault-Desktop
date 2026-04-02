@@ -209,7 +209,7 @@ OogVault-Desktop/
 ## 🛠️ Tech Stack
 
 - **Electron 34** — cross-platform desktop shell
-- **Vanilla JavaScript** — no frameworks, no build step, no dependencies
+- **TypeScript (strict)** — vanilla DOM, no frameworks
 - **IndexedDB** — local persistent storage
 - **MCP (stdio)** — Claude Desktop integration via Model Context Protocol
 
@@ -240,7 +240,7 @@ The **Copy** and **Open** buttons in the overlay, along with `Enter` / `Cmd+Ente
 
 ## 📄 License
 
-MIT — do whatever you want with it, just don't pretend you built it.
+MIT — free to use, modify, and distribute.
 
 ---
 

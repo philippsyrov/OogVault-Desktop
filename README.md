@@ -18,10 +18,10 @@
   <a href="https://github.com/philippsyrov/OogVault">Browser extension</a>
 </p>
 
-> [!NOTE]
-> **Maintenance status:** OogVault is no longer actively maintained. Its ideas carried over into newer work. The code still builds and the MCP server works, but the browser extension hooks into the web pages of Claude, ChatGPT and other chat sites, and those change often, so capture may need updating. Forks and PRs are welcome.
+**OogVault Desktop is an Electron app that browses and searches the conversations you saved with the [OogVault](https://github.com/philippsyrov/OogVault) browser extension, and runs an MCP server so Claude Desktop can query the same vault.** Everything stays on your machine: no accounts, no cloud sync, no telemetry.
 
-OogVault Desktop is the companion app for the [OogVault](https://github.com/philippsyrov/OogVault) browser extension. Browse your full conversation history, jump to anything with a Spotlight-style overlay, and let Claude Desktop query your vault through MCP. No accounts, no cloud sync, and no telemetry.
+> [!NOTE]
+> **Maintenance status:** OogVault is no longer actively maintained. The code still builds and the MCP server works, but the browser extension hooks into the web pages of Claude, ChatGPT and other chat sites, and those change often, so capture may need updating. Forks and PRs are welcome.
 
 <p align="center">
   <img src="assets/screenshots/desktop-tab.png" alt="Menu bar and Quick Search" width="360">
@@ -34,15 +34,15 @@ OogVault Desktop is the companion app for the [OogVault](https://github.com/phil
   <img src="assets/screenshots/claude-result.png" alt="Claude showing a retrieved conversation" width="360">
 </p>
 
-<table>
-<tr><td><b>Quick Search</b></td><td>Press <code>Cmd+Shift+Space</code> (or <code>Ctrl+Shift+Space</code>) from any app to search your vault instantly.</td></tr>
-<tr><td><b>Full-window browser</b></td><td>Two-panel UI: conversation list on the left, full message thread on the right.</td></tr>
-<tr><td><b>Menu bar presence</b></td><td>Lives in the macOS menu bar so the vault is always one click away.</td></tr>
-<tr><td><b>Knowledge base</b></td><td>Imported chats are distilled into searchable Q&A nuggets, grouped by topic.</td></tr>
-<tr><td><b>MCP for Claude</b></td><td>Expose your vault to Claude Desktop so it can search and recall past conversations. <a href="docs/MCP.md">Setup guide →</a></td></tr>
-<tr><td><b>Import & export</b></td><td>One-click import from the extension JSON export; export threads as Markdown or the vault as JSON.</td></tr>
-<tr><td><b>Private by design</b></td><td>Data stays on your machine in IndexedDB and a local snapshot file; the app makes no network requests.</td></tr>
-</table>
+| Feature | What it does |
+| --- | --- |
+| **Quick Search** | `Cmd+Shift+Space` (or `Ctrl+Shift+Space`) opens a search overlay over your vault from any app. |
+| **Conversation browser** | Two-panel window: conversation list on the left, the full message thread on the right. |
+| **Menu bar icon** | Sits in the macOS menu bar so the vault is one click away. |
+| **Knowledge base** | Distils imported chats into searchable Q&A nuggets, grouped by topic. |
+| **MCP server for Claude** | Exposes the vault to Claude Desktop over stdio so it can search and fetch past conversations. See [docs/MCP.md](docs/MCP.md). |
+| **Import and export** | Imports the extension's JSON export in one click; exports a thread as Markdown or the whole vault as JSON. |
+| **Local only** | Data stays in IndexedDB and a local snapshot file; the app makes no network requests. |
 
 ## Install
 
@@ -61,44 +61,14 @@ npm start            # compile TypeScript and launch Electron
 npm run build
 ```
 
-The repo is self-contained: `lib/` holds a copy of the extension's storage and search code (`db.js`, `search.js`), so you don't need the [OogVault](https://github.com/philippsyrov/OogVault) repo next to it.
-
 After launch, use the menu bar icon or **`Cmd+Shift+Space`** for Quick Search. Import conversations from the extension via **Settings → Import from Extension** (export JSON from the extension first).
 
 ## Docs
 
-- [Claude Desktop MCP setup](docs/MCP.md): let Claude Desktop search your vault.
-
-<details>
-<summary><b>Under the hood</b></summary>
-
-```
-OogVault extension (browser)
-        │
-        │  JSON export
-        ▼
-OogVault Desktop (Electron)
-  ├── IndexedDB          ← conversations & messages (local)
-  ├── Quick Search       ← global hotkey overlay
-  ├── Knowledge base     ← auto-extracted Q&A nuggets
-  └── vault-snapshot.json ──► MCP server ──► Claude Desktop
-```
-
-**Stack:** Electron 34, TypeScript (strict), vanilla DOM, IndexedDB, MCP over stdio.
-
-**Data locations**
-
-| Platform | Path |
+| Doc | Covers |
 | --- | --- |
-| macOS | `~/Library/Application Support/oogvault-desktop/` |
-| Windows | `%APPDATA%\oogvault-desktop\` |
-| Linux | `~/.config/oogvault-desktop/` |
-
-**Import flow:** Extension **Settings → Export All** → Desktop **Settings → Import from Extension**.
-
-**Known issue (macOS):** Copy/Open buttons in the Quick Search overlay can miss clicks on frameless transparent windows; click a result row to open in the main window, or press `Esc` to dismiss.
-
-</details>
+| [docs/MCP.md](docs/MCP.md) | Claude Desktop MCP setup, available tools, troubleshooting |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Data flow, stack, data locations, import flow, known issues |
 
 ## License
 

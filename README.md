@@ -23,26 +23,35 @@
 > [!NOTE]
 > **Maintenance status:** OogVault is no longer maintained. I built it when Claude Code could only remember what was in `CLAUDE.md`. Coding agents now have proper built-in memory, so it is not needed anymore. The code still builds and the MCP server works, but the browser extension hooks into the web pages of Claude, ChatGPT and other chat sites, and those change often, so capture may need updating. Forks and PRs are welcome.
 
-<p align="center">
-  <img src="assets/screenshots/desktop-tab.png" alt="Menu bar and Quick Search" width="360">
-  <img src="assets/screenshots/quick-search.png" alt="Quick Search results" width="360">
-  <img src="assets/screenshots/knowledge-tab.png" alt="Knowledge base" width="360">
-</p>
+## Features
 
-<p align="center">
-  <img src="assets/screenshots/claude-search.png" alt="Claude searching the vault" width="360">
-  <img src="assets/screenshots/claude-result.png" alt="Claude showing a retrieved conversation" width="360">
-</p>
+### Quick Search and menu bar icon
 
-| Feature | What it does |
-| --- | --- |
-| **Quick Search** | `Cmd+Shift+Space` (or `Ctrl+Shift+Space`) opens a search overlay over your vault from any app. |
-| **Conversation browser** | Two-panel window: conversation list on the left, the full message thread on the right. |
-| **Menu bar icon** | Sits in the macOS menu bar so the vault is one click away. |
-| **Knowledge base** | Distils imported chats into searchable Q&A nuggets, grouped by topic. |
-| **MCP server for Claude** | Exposes the vault to Claude Desktop over stdio so it can search and fetch past conversations. See [docs/MCP.md](docs/MCP.md). |
-| **Import and export** | Imports the extension's JSON export in one click; exports a thread as Markdown or the whole vault as JSON. |
-| **Local only** | Data stays in IndexedDB and a local snapshot file; the app makes no network requests. |
+`Cmd+Shift+Space` (or `Ctrl+Shift+Space`) opens a search overlay over your vault from any app. OogVault also sits in the macOS menu bar, so the vault is one click away.
+
+<p align="center"><img src="assets/screenshots/desktop-tab.png" alt="Menu bar menu and the Quick Search overlay" width="600"></p>
+
+<p align="center"><img src="assets/screenshots/quick-search.png" alt="Quick Search results" width="680"></p>
+
+### Knowledge base
+
+Distils imported chats into searchable Q&A nuggets, grouped by topic.
+
+<p align="center"><img src="assets/screenshots/knowledge-tab.png" alt="Knowledge base grouped by topic" width="720"></p>
+
+### MCP server for Claude
+
+Exposes the vault to Claude Desktop over stdio so it can search and fetch past conversations. See [docs/MCP.md](docs/MCP.md).
+
+<p align="center"><img src="assets/screenshots/claude-search.png" alt="Claude searching the vault" width="600"></p>
+
+<p align="center"><img src="assets/screenshots/claude-result.png" alt="Claude showing a retrieved conversation" width="600"></p>
+
+### Also
+
+- **Conversation browser** - Two-panel window: conversation list on the left, the full message thread on the right.
+- **Import and export** - Imports the extension's JSON export in one click; exports a thread as Markdown or the whole vault as JSON.
+- **Local only** - Data stays in IndexedDB and a local snapshot file; the app makes no network requests.
 
 ## Install
 

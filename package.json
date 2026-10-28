@@ -20,7 +20,8 @@
       "icon": "assets/icon.icns"
     },
     "asarUnpack": [
-      "server/**"
+      "server/**",
+      "node_modules/**"
     ],
     "files": [
       "main.js",

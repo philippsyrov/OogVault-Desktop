@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <em>A companion desktop app for the <a href="https://github.com/PhilT3ch/OogVault">OogVault browser extension</a>.<br/>
+  <em>A companion desktop app for the <a href="https://github.com/philippsyrov/OogVault">OogVault browser extension</a>.<br/>
   Browse, search, and ask Claude about every AI conversation you've ever saved — all local, all private.</em>
 </p>
 
@@ -96,7 +96,7 @@ No network requests are ever made. No accounts, no sign-up, no telemetry. Zero.
 ### Prerequisites
 
 - [Node.js](https://nodejs.org) v18+
-- The [OogVault browser extension](https://github.com/PhilT3ch/OogVault) cloned **next to** this folder
+- The [OogVault browser extension](https://github.com/philippsyrov/OogVault) cloned **next to** this folder
 
 ```
 your-projects/

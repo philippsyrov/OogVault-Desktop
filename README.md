@@ -12,12 +12,15 @@
 
 <p align="center">
   <a href="docs/MCP.md"><img src="https://img.shields.io/badge/Docs-MCP%20setup-FFD400?style=for-the-badge&labelColor=0a0a08" alt="MCP documentation"></a>
-  <a href="https://github.com/philippsyrov/OogVault-Desktop"><img src="https://img.shields.io/badge/Status-Beta-FFD400?style=for-the-badge&labelColor=0a0a08" alt="Status: Beta"></a>
+  <a href="https://github.com/philippsyrov/OogVault-Desktop"><img src="https://img.shields.io/badge/Status-Unmaintained-FFD400?style=for-the-badge&labelColor=0a0a08" alt="Status: Unmaintained"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-FFD400?style=for-the-badge&labelColor=0a0a08" alt="License: MIT"></a>
   <a href="https://github.com/philippsyrov/OogVault"><img src="https://img.shields.io/badge/Works%20with-OogVault-FFD400?style=for-the-badge&labelColor=0a0a08" alt="Works with OogVault"></a>
   <img src="https://img.shields.io/badge/Privacy-100%25%20local-FFD400?style=for-the-badge&labelColor=0a0a08" alt="100% local">
   <img src="https://img.shields.io/badge/Electron-34-FFD400?style=for-the-badge&labelColor=0a0a08" alt="Electron 34">
 </p>
+
+> [!NOTE]
+> **Maintenance status:** OogVault is no longer actively maintained. Its ideas carried over into newer work. The code still builds and the MCP server works, but the browser extension hooks into the web pages of Claude, ChatGPT and other chat sites, and those change often, so capture may need updating. Forks and PRs are welcome.
 
 **Every AI chat you've saved, searchable in one hotkey. Local only.**
 
@@ -37,15 +40,7 @@ OogVault Desktop is the companion app for the [OogVault](https://github.com/phil
 
 ## Quick start
 
-Clone **both** repositories **side by side** (Desktop shares `lib/` with the extension):
-
-```text
-your-projects/
-├── OogVault/              ← browser extension
-└── OogVault-Desktop/      ← this repo (lib/ → ../OogVault/lib)
-```
-
-If `lib/` is missing after clone, link or copy it: `ln -s ../OogVault/lib lib`
+This repo is self-contained. `lib/` holds a copy of the extension's storage and search code (`db.js`, `search.js`), so you don't need the [OogVault](https://github.com/philippsyrov/OogVault) repo next to it to build.
 
 ## Getting started
 
@@ -55,9 +50,11 @@ cd OogVault-Desktop
 npm install          # install dependencies
 npm start            # compile TypeScript and launch Electron
 
-# Optional: build a macOS .app
-npm run dist
+# Optional: build a macOS .app and .dmg into dist/
+npm run build
 ```
+
+Prebuilt builds are unsigned, so on first launch right-click the app and pick **Open**.
 
 After launch, use the menu bar icon or **`Cmd+Shift+Space`** for Quick Search. Import conversations from the extension via **Settings → Import from Extension** (export JSON from the extension first).
 

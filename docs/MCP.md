@@ -20,19 +20,21 @@ Edit your Claude Desktop config:
 - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-Add the OogVault MCP entry. Point `command` at the **`start-mcp.sh`** script inside your OogVault Desktop clone (use the path where you cloned the repo):
+Add the OogVault MCP entry. If you installed the packaged app in `/Applications`, point `command` at the launcher inside the bundle:
 
 ```json
 {
   "mcpServers": {
     "oogvault": {
-      "command": "/path/to/OogVault-Desktop/server/start-mcp.sh"
+      "command": "/Applications/OogVault.app/Contents/Resources/app.asar.unpacked/server/start-mcp.sh"
     }
   }
 }
 ```
 
-The launcher script runs `node server/mcp-server.js` from the app directory. If you installed from a packaged `.app`, use the copy of `server/start-mcp.sh` inside the application bundle (see the [packaging PR](https://github.com/philippsyrov/OogVault-Desktop/pulls) for bundle layout).
+Inside the packaged app the launcher uses the app's own bundled runtime, so you don't need Node.js installed.
+
+If you run from a clone instead, use `/path/to/OogVault-Desktop/server/start-mcp.sh`. In that case the script runs `node server/mcp-server.js`, so Node.js 18+ must be on your `PATH`.
 
 Restart Claude Desktop after saving the config.
 
@@ -57,5 +59,5 @@ Example prompts:
 ## Troubleshooting
 
 - **Empty results:** Open the desktop app and confirm you have imported conversations; the snapshot updates when the app runs.
-- **Server won't start:** Ensure Node.js is on your `PATH` (the script uses `node`). Check Claude Desktop MCP logs for errors.
+- **Server won't start:** From a clone, make sure Node.js is on your `PATH`. From the app, check the path points inside `OogVault.app`. Claude Desktop's MCP logs show the exact error.
 - **Permission denied on `start-mcp.sh`:** Run `chmod +x server/start-mcp.sh` in your clone.

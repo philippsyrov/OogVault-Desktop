@@ -19,11 +19,16 @@
       "category": "public.app-category.productivity",
       "icon": "assets/icon.icns"
     },
+    "asarUnpack": [
+      "server/**",
+      "node_modules/**"
+    ],
     "files": [
       "main.js",
       "preload.cjs",
       "renderer/**/*",
       "lib/**/*",
+      "server/**/*",
       "assets/**/*",
       "!assets/screenshots/**"
     ]

@@ -1,6 +1,6 @@
 {
   "name": "oogvault-desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OogVault Desktop — local AI conversation search and knowledge base",
   "license": "MIT",
   "main": "main.js",

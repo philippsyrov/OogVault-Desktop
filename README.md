@@ -21,7 +21,7 @@
 **OogVault Desktop is an Electron app that browses and searches the conversations you saved with the [OogVault](https://github.com/philippsyrov/OogVault) browser extension, and runs an MCP server so Claude Desktop can query the same vault.** Everything stays on your machine: no accounts, no cloud sync, no telemetry.
 
 > [!NOTE]
-> **Maintenance status:** OogVault is no longer actively maintained. The code still builds and the MCP server works, but the browser extension hooks into the web pages of Claude, ChatGPT and other chat sites, and those change often, so capture may need updating. Forks and PRs are welcome.
+> **Maintenance status:** OogVault is no longer maintained. I built it when Claude Code could only remember what was in `CLAUDE.md`. Coding agents now have proper built-in memory, so it is not needed anymore. The code still builds and the MCP server works, but the browser extension hooks into the web pages of Claude, ChatGPT and other chat sites, and those change often, so capture may need updating. Forks and PRs are welcome.
 
 <p align="center">
   <img src="assets/screenshots/desktop-tab.png" alt="Menu bar and Quick Search" width="360">

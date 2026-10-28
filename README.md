@@ -38,14 +38,11 @@ OogVault Desktop is the companion app for the [OogVault](https://github.com/phil
 
 ---
 
-## Quick start
-
-This repo is self-contained. `lib/` holds a copy of the extension's storage and search code (`db.js`, `search.js`), so you don't need the [OogVault](https://github.com/philippsyrov/OogVault) repo next to it to build.
-
 ## Getting started
 
 ```bash
-# Node.js 18+ required
+# Node.js 18+
+git clone https://github.com/philippsyrov/OogVault-Desktop.git
 cd OogVault-Desktop
 npm install          # install dependencies
 npm start            # compile TypeScript and launch Electron
@@ -54,11 +51,13 @@ npm start            # compile TypeScript and launch Electron
 npm run build
 ```
 
+The repo is self-contained: `lib/` holds a copy of the extension's storage and search code (`db.js`, `search.js`), so you don't need the [OogVault](https://github.com/philippsyrov/OogVault) repo next to it.
+
 Prebuilt builds are unsigned, so on first launch right-click the app and pick **Open**.
 
 After launch, use the menu bar icon or **`Cmd+Shift+Space`** for Quick Search. Import conversations from the extension via **Settings → Import from Extension** (export JSON from the extension first).
 
-📖 **[Claude Desktop MCP setup →](docs/MCP.md)**
+**[Claude Desktop MCP setup →](docs/MCP.md)**
 
 ---
 
